@@ -14,6 +14,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <button id="makedeck">Make a Deck</button>
     <button id="makemajor">Make a Major</button>
     <button id="makeminor">Make a Minor</button>
+    <button id="maked20">Make a D20</button>
   </div>
 `;
 
@@ -59,8 +60,8 @@ class Decked
         {
             e.preventDefault();
 
-            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_ABSTRACT, CardUrls.DECK52, CardUrls.GETCARDURL);
-            const items = DECKEDMAIN.CreateDeck(CardUrls.BACK_ABSTRACT, deckData);
+            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_ABSTRACT, CardUrls.DECK52, CardUrls.GETPNGURL);
+            const items = DECKEDMAIN.CreateDeck(deckData.Cards[0].BackUrl, deckData);
 
             OBR.scene.items.addItems(items);
         }
@@ -70,8 +71,8 @@ class Decked
         {
             e.preventDefault();
 
-            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_ASTRONAUT, CardUrls.TAROTMAJOR, CardUrls.GETTAROTURL);
-            const items = DECKEDMAIN.CreateDeck(CardUrls.BACK_ASTRONAUT, deckData);
+            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_ASTRONAUT, CardUrls.TAROTMAJOR, CardUrls.GETWEBPURL);
+            const items = DECKEDMAIN.CreateDeck(deckData.Cards[0].BackUrl, deckData);
 
             OBR.scene.items.addItems(items);
         }
@@ -81,8 +82,19 @@ class Decked
         {
             e.preventDefault();
 
-            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_SCENE, CardUrls.TAROTMINOR, CardUrls.GETTAROTURL);
-            const items = DECKEDMAIN.CreateDeck(CardUrls.BACK_SCENE, deckData);
+            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_SCENE, CardUrls.TAROTMINOR, CardUrls.GETWEBPURL);
+            const items = DECKEDMAIN.CreateDeck(deckData.Cards[0].BackUrl, deckData);
+
+            OBR.scene.items.addItems(items);
+        }
+
+        const maked20Thing = document.getElementById('maked20') as HTMLButtonElement;
+        maked20Thing.onclick = async (e) =>
+        {
+            e.preventDefault();
+
+            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_RED, CardUrls.DICECARDS, CardUrls.GETWEBPURL);
+            const items = DECKEDMAIN.CreateDeck(deckData.Cards[0].BackUrl, deckData);
 
             OBR.scene.items.addItems(items);
         }

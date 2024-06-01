@@ -32,8 +32,8 @@ export class CardUrls
     static BACK_CLOUDS = CardUrls.BASE + "backs_clouds.png";
     static BACK_SCENE = CardUrls.BASE + "backs_scene.png";
 
-    static GETCARDURL = (value: string) => { return CardUrls.BASE + value + '.png'; };
-    static GETTAROTURL = (value: string) => { return CardUrls.BASE + value + '.webp'; };
+    static GETPNGURL = (value: string) => { return CardUrls.BASE + value + '.png'; };
+    static GETWEBPURL = (value: string) => { return CardUrls.BASE + value + '.webp'; };
 
     static DECK52 = [
         // Clubs
@@ -111,6 +111,8 @@ export class CardUrls
         "pentacles_ace", "pentacles_2", "pentacles_3", "pentacles_4", "pentacles_5", "pentacles_6", "pentacles_7", "pentacles_8", "pentacles_9", "pentacles_10", "pentacles_page", "pentacles_knight", "pentacles_queen", "pentacles_king",
         "wands_ace", "wands_2", "wands_3", "wands_4", "wands_5", "wands_6", "wands_7", "wands_8", "wands_9", "wands_10", "wands_page", "wands_knight", "wands_queen", "wands_king"
     ];
+
+    static DICECARDS = Array.from({ length: 20 }, (_v, i) => `dicecard_${i + 1}`);
 
     // Clubs
     static CLUBS_2 = CardUrls.BASE + "clubs_2.png";
