@@ -1,15 +1,87 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Decked!</title>
-    <script type="module" crossorigin src="/assets/main-B3xQ0gvb.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-    <link rel="modulepreload" crossorigin href="/assets/bsConstants-D5aU1hWn.js">
-    <link rel="stylesheet" crossorigin href="/assets/main-2HFpVEhA.css">
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+  <script type="module" crossorigin src="/assets/main-J1wKWAWx.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/assets/bsConstants-Ci3gOeKI.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-B77wNbav.css">
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <div id="tabControls">
+                <div class="controlContainer">
+                    <button class="view-button selected" id="defaultDeckCreation">Standard</button>
+                    <button class="view-button" id="customDeckCreation">Custom</button>
+                </div>
+            </div>
+            <div id="defaultPanel" class="panel">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <div id="cardThumbnails">
+                                <img class="card-preview" id="backPreview"
+                                    src="https://battle-system.com/owlbear/decked-docs/cards/backs_abstract.png"
+                                    onerror="this.onerror=null;this.src='https://battle-system.com/owlbear/decked-docs/cards/error_card.webp';">
+                                <img class="card-preview" id="frontPreview"
+                                    src="https://battle-system.com/owlbear/decked-docs/cards/spades_king.png"
+                                    onerror="this.onerror=null;this.src='https://battle-system.com/owlbear/decked-docs/cards/error_card.webp';">
+                            </div>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>Deck Backing:</div>
+                            </td>
+                            <td>
+                                <div><select id="defaultBacks" name="defaultBacks"></div>
+                            </td>
+                        </tr>
+                        <tr id="standardUseTokenRow">
+                            <td>
+                                <div id="selectedToken"> • Token Name/Url</div>
+                            </td>
+                            <td>
+                                <button class="confirm-button" id="selectTokenButton">Confirm Selected Token</button>
+                            </td>
+                        </tr>
+                        <tr id="standardUseUrlRow">
+                            <td>
+                                <div id="selectedUrl"> • Url Name/Url</div>
+                            </td>
+                            <td>
+                                <div style="display: flex;">
+                                    <input class="text-input" id="useUrlInput" />
+                                    <button class="ok-button" id="useUrlOKButton">OK</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>Deck Type:</div>
+                            </td>
+                            <td>
+                                <div><select id="defaultDecks" name="defaultDecks"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="justify-content: center;">
+                                <button class="confirm-button" id="createDeckButton">Create Deck</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="customPanel" class="panel" style="display: none;">
+                <div id="textareaPrivateNotes">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
 </html>

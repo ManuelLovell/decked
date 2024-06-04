@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{O as e,C as a}from"./bsConstants-D5aU1hWn.js";const d=document.querySelector("#bs-whatsnew"),i=document.querySelector("#bs-whatsnew-notes");d.innerHTML=`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{O as e,C as a}from"./bsConstants-Ci3gOeKI.js";const d=document.querySelector("#bs-whatsnew"),i=document.querySelector("#bs-whatsnew-notes");d.innerHTML=`
   <div id="newsContainer">
     <h1>Decked! 5/29</h1>
     Another one.
