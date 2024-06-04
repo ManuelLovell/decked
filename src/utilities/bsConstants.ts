@@ -35,6 +35,25 @@ export class CardUrls
     static GETPNGURL = (value: string) => { return CardUrls.BASE + value + '.png'; };
     static GETWEBPURL = (value: string) => { return CardUrls.BASE + value + '.webp'; };
 
+    static DEFAULTDECKS = [
+        "Base52",
+        "Tarot Major",
+        "Tarot Minor",
+        "D20"
+    ];
+
+    static DEFAULTBACKS = [
+        this.BACK_ABSTRACT,
+        this.BACK_ASTRONAUT,
+        this.BACK_BLUE,
+        this.BACK_BLUETWO,
+        this.BACK_CASTLE,
+        this.BACK_CLOUDS,
+        this.BACK_RED,
+        this.BACK_REDTWO,
+        this.BACK_SCENE,
+    ];
+
     static DECK52 = [
         // Clubs
         "clubs_2",
@@ -100,7 +119,7 @@ export class CardUrls
     static TAROTMAJOR = [
         "major_fool", "major_magician", "major_priestess", "major_empress", "major_emperor",
         "major_hierophant", "major_lovers", "major_chariot", "major_strength", "major_hermit",
-        "major_wheel", "major_justice", "major_hangedman", "major_death", "major_temperance",
+        "major_fortune", "major_justice", "major_hangedman", "major_death", "major_temperance",
         "major_devil", "major_tower", "major_star", "major_moon", "major_sun",
         "major_judgement", "major_world"
     ];

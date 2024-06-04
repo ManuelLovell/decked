@@ -43,7 +43,7 @@ export async function SetupContextMenuButtons()
                             // Update the top of the deck's image in case different
                             const nextCard = firstHalf[firstHalf.length - 1];
                             const extension = Utilities.GetImageExtension(nextCard.BackUrl);
-                            item.metadata[`${Constants.EXTENSIONID}/deck_data`] = {Id: fulldeck.Id, Cards: firstHalf};
+                            item.metadata[`${Constants.EXTENSIONID}/deck_data`] = { Id: fulldeck.Id, Cards: firstHalf };
                             item.image.url = nextCard.BackUrl;
                             item.image.mime = `image/${extension}`;
 
@@ -200,13 +200,7 @@ export async function SetupContextMenuButtons()
                 if (drewCard)
                 {
                     // Create Cards
-                    const createCard = DECKEDMAIN.CreateCard(
-                        drewCard.FrontUrl,
-                        drewCard.BackUrl,
-                        drewCard.Value,
-                        drewCard.FaceUp,
-                        drewCard.DeckId
-                    );
+                    const createCard = DECKEDMAIN.CreateCardFromData(drewCard);
 
                     createCard.position =
                     {
@@ -256,13 +250,7 @@ export async function SetupContextMenuButtons()
                     else if (ddata.Cards.length === 2)
                     {
                         const lastCard = ddata.Cards[0];
-                        const createLastCard = DECKEDMAIN.CreateCard(
-                            lastCard.FrontUrl,
-                            lastCard.BackUrl,
-                            lastCard.Value,
-                            lastCard.FaceUp,
-                            lastCard.DeckId
-                        );
+                        const createLastCard = DECKEDMAIN.CreateCardFromData(lastCard);
 
                         createLastCard.position =
                         {

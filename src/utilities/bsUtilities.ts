@@ -1,4 +1,4 @@
-import OBR, { Item, Image, Theme, Vector2 } from "@owlbear-rodeo/sdk";
+import OBR, { Item, Image as OBRImage, Theme, Vector2 } from "@owlbear-rodeo/sdk";
 import { BSCACHE } from "./bsSceneCache";
 import { Constants } from "./bsConstants";
 
@@ -206,6 +206,32 @@ export function Debounce<T extends (...args: any[]) => void>(
         }, delay);
     };
 }
+export function calculateScale(originalWidth: number, originalHeight: number): Vector2
+{
+    const targetWidth = 234;
+    const targetHeight = 333;
+    const scaleX = targetWidth / originalWidth;
+    const scaleY = targetHeight / originalHeight;
+
+    return { x: scaleX, y: scaleY };
+}
+export function getImageDimensions(imageUrl: string): Promise<Vector2>
+{
+    return new Promise((resolve, reject) =>
+    {
+        const img = new Image();
+        img.onload = () =>
+        {
+            const dimensions: Vector2 = { x: img.naturalWidth, y: img.naturalHeight };
+            resolve(dimensions);
+        };
+        img.onerror = (error) =>
+        {
+            reject(error);
+        };
+        img.src = imageUrl;
+    });
+}
 
 export function isObjectEmpty(obj: Record<string, any>): boolean
 {
@@ -392,7 +418,7 @@ export function SetThemeMode(theme: Theme, document: Document): void
     }
 }
 
-export function GetImageBounds(item: Image, dpi: any)
+export function GetImageBounds(item: OBRImage, dpi: any)
 {
     const dpiScale = dpi / item.grid.dpi;
     const width = item.image.width * dpiScale * item.scale.x;

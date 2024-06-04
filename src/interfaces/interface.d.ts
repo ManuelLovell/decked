@@ -1,7 +1,9 @@
 interface CardData
 {
     FrontUrl: string;
+    FrontSize: Vector2;
     BackUrl: string;
+    BackSize: Vector2;
     Value: string;
     FaceUp: boolean;
     DeckId: string;

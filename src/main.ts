@@ -7,17 +7,6 @@ import { BSCACHE } from './utilities/bsSceneCache';
 
 type ProcessCardUrl = (url: string) => string;
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    Hello.
-    <button id="makecard">Make a Card</button>
-    <button id="makedeck">Make a Deck</button>
-    <button id="makemajor">Make a Major</button>
-    <button id="makeminor">Make a Minor</button>
-    <button id="maked20">Make a D20</button>
-  </div>
-`;
-
 async function BeginDecked()
 {
     await BSCACHE.InitializeCache();
@@ -48,6 +37,27 @@ OBR.onReady(async () =>
 
 class Decked
 {
+    backLoaded = true;
+    frontLoaded = true;
+
+    defaultDeckBacks = document.getElementById('defaultBacks') as HTMLSelectElement;
+    defaultDeckTypes = document.getElementById('defaultDecks') as HTMLSelectElement;
+
+    defaultDeckCreation = document.getElementById('defaultDeckCreation') as HTMLDivElement;
+    defaultPanel = document.getElementById('defaultPanel') as HTMLDivElement;
+    customDeckCreation = document.getElementById('customDeckCreation') as HTMLDivElement;
+    customPanel = document.getElementById('customPanel') as HTMLDivElement;
+
+    frontPreview = document.getElementById('frontPreview') as HTMLImageElement;
+    backPreview = document.getElementById('backPreview') as HTMLImageElement;
+
+    selectTokenButton = document.getElementById('selectTokenButton') as HTMLButtonElement;
+
+    useUrlInput = document.getElementById('useUrlInput') as HTMLInputElement;
+    useUrlOKButton = document.getElementById('useUrlOKButton') as HTMLButtonElement;
+
+    createDeckButton = document.getElementById('createDeckButton') as HTMLButtonElement;
+
     constructor()
     {
 
@@ -55,65 +65,192 @@ class Decked
 
     public async Testing()
     {
-        const makeDeckThing = document.getElementById('makedeck') as HTMLButtonElement;
-        makeDeckThing.onclick = async (e) =>
+        // Setup Image Fail Checks
+        this.frontPreview.onload = () => 
         {
-            e.preventDefault();
-
-            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_ABSTRACT, CardUrls.DECK52, CardUrls.GETPNGURL);
-            const items = DECKEDMAIN.CreateDeck(deckData.Cards[0].BackUrl, deckData);
-
-            OBR.scene.items.addItems(items);
-        }
-
-        const makeMajorThing = document.getElementById('makemajor') as HTMLButtonElement;
-        makeMajorThing.onclick = async (e) =>
-        {
-            e.preventDefault();
-
-            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_ASTRONAUT, CardUrls.TAROTMAJOR, CardUrls.GETWEBPURL);
-            const items = DECKEDMAIN.CreateDeck(deckData.Cards[0].BackUrl, deckData);
-
-            OBR.scene.items.addItems(items);
-        }
-
-        const makeMinorThing = document.getElementById('makeminor') as HTMLButtonElement;
-        makeMinorThing.onclick = async (e) =>
-        {
-            e.preventDefault();
-
-            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_SCENE, CardUrls.TAROTMINOR, CardUrls.GETWEBPURL);
-            const items = DECKEDMAIN.CreateDeck(deckData.Cards[0].BackUrl, deckData);
-
-            OBR.scene.items.addItems(items);
-        }
-
-        const maked20Thing = document.getElementById('maked20') as HTMLButtonElement;
-        maked20Thing.onclick = async (e) =>
-        {
-            e.preventDefault();
-
-            const deckData = DECKEDMAIN.PopulateDeck(CardUrls.BACK_RED, CardUrls.DICECARDS, CardUrls.GETWEBPURL);
-            const items = DECKEDMAIN.CreateDeck(deckData.Cards[0].BackUrl, deckData);
-
-            OBR.scene.items.addItems(items);
-        }
-
-        const makeThing = document.getElementById('makecard') as HTMLButtonElement;
-        makeThing.onclick = async (e) =>
-        {
-            e.preventDefault();
-
-            const item = DECKEDMAIN.CreateCard(
-                CardUrls.CLUBS_10,
-                CardUrls.BACK_CLOUDS,
-                "clubs_10",
-                true,
-                Utilities.GetGUID()
-            )
-
-            OBR.scene.items.addItems([item]);
+            if (this.frontPreview.src !== 'https://battle-system.com/owlbear/decked-docs/cards/error_card.webp')
+                this.frontLoaded = true;
         };
+        this.frontPreview.onerror = () =>
+        {
+            this.frontLoaded = false;
+            this.frontPreview.src = 'https://battle-system.com/owlbear/decked-docs/cards/error_card.webp';
+        };
+
+        this.backPreview.onload = () => 
+        {
+            if (this.backPreview.src !== 'https://battle-system.com/owlbear/decked-docs/cards/error_card.webp')
+                this.backLoaded = true;
+        };
+        this.backPreview.onerror = () =>
+        {
+            this.backLoaded = false;
+            this.backPreview.src = 'https://battle-system.com/owlbear/decked-docs/cards/error_card.webp';
+        };
+
+        // Setup Deck Backing Select
+        CardUrls.DEFAULTBACKS.forEach(back =>
+        {
+            const name = back.replace(CardUrls.BASE, "").replace(/^backs_/, '').replace(/\.png$/, '');
+            const upper = name.charAt(0).toUpperCase() + name.slice(1);
+            const option = document.createElement('option');
+            option.value = back;
+            option.textContent = upper;
+            this.defaultDeckBacks.appendChild(option);
+        });
+        this.defaultDeckBacks.onchange = (e) =>
+        {
+            const element = e.currentTarget as HTMLSelectElement;
+            const value = element.value;
+            this.backPreview.src = value;
+        };
+
+        // Setup Deck Type Select
+        CardUrls.DEFAULTDECKS.forEach(deck =>
+        {
+            const option = document.createElement('option');
+            option.value = deck;
+            option.textContent = deck;
+            this.defaultDeckTypes.appendChild(option);
+        });
+        this.defaultDeckTypes.onchange = (e) =>
+        {
+            const element = e.currentTarget as HTMLSelectElement;
+            const value = element.value;
+            switch (value)
+            {
+                case "Base52":
+                    this.frontPreview.src = CardUrls.SPADES_KING;
+                    break;
+                case "Tarot Major":
+                    this.frontPreview.src = CardUrls.BASE + "major_tower.webp";
+                    break;
+                case "Tarot Minor":
+                    this.frontPreview.src = CardUrls.BASE + "swords_king.webp";
+                    break;
+                case "D20":
+                    this.frontPreview.src = CardUrls.BASE + "dice_20.webp";
+                    break;
+            }
+        };
+
+        // Setup Tab Controls
+        this.defaultDeckCreation.onclick = (e) =>
+        {
+            e.preventDefault();
+            this.defaultPanel.style.display = "block";
+            this.defaultDeckCreation.classList.add("selected");
+
+            this.customPanel.style.display = "none";
+            this.customDeckCreation.classList.remove("selected");
+        };
+
+        this.customDeckCreation.onclick = (e) =>
+        {
+            e.preventDefault();
+            this.defaultPanel.style.display = "none";
+            this.defaultDeckCreation.classList.remove("selected");
+
+            this.customPanel.style.display = "block";
+            this.customDeckCreation.classList.add("selected");
+        };
+
+        // Setup Token Select
+        this.selectTokenButton.onclick = async (e) =>
+        {
+            e.preventDefault();
+
+            const selections = await OBR.player.getSelection();
+            if (selections === undefined || selections.length === 0) return;
+            const itemsSelected = BSCACHE.sceneItems.filter(x => selections.includes(x.id)) as Image[];
+            if (itemsSelected.length === 0) return;
+            const imagesSelected = itemsSelected.filter(x => x.image?.url !== undefined);
+            if (imagesSelected.length === 0) return;
+
+            this.backLoaded = false;
+
+            const selectedUrl = imagesSelected[0].image.url;
+            this.backPreview.src = selectedUrl;
+        };
+
+        // Setup URL Select
+        this.useUrlOKButton.onclick = async (e) =>
+        {
+            e.preventDefault();
+            const enteredText = this.useUrlInput.value;
+            if (!enteredText) return;
+            const imageExtensions = /\.(jpg|jpeg|png|gif|webp|webm|mp4)$/i;
+
+            try
+            {
+                var parsedUrl = new URL(enteredText);
+                if ((parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:")
+                    && imageExtensions.test(parsedUrl.pathname))
+                {
+                    this.backLoaded = false;
+                    this.backPreview.src = parsedUrl.toString();
+                }
+                else
+                {
+                    await OBR.notification.show("Invalid image URL.", "ERROR");
+                }
+            } catch (_)
+            {
+                await OBR.notification.show("Invalid image URL.", "ERROR");
+            }
+        };
+
+        // Setup Create Deck Button
+        this.createDeckButton.onclick = async (e) =>
+        {
+            e.preventDefault();
+
+            if (!this.frontLoaded || !this.backLoaded)
+                await OBR.notification.show("Please use valid images before creating the deck.", "ERROR");
+
+            const BACKIMAGE = this.backPreview.src;
+            const DECKTYPE = this.defaultDeckTypes.value;
+            let deckTypeData: string[];
+            let png = false;
+
+            switch (DECKTYPE)
+            {
+                case "Base52":
+                    deckTypeData = CardUrls.DECK52;
+                    png = true;
+                    break;
+                case "Tarot Major":
+                    deckTypeData = CardUrls.TAROTMAJOR;
+                    break;
+                case "Tarot Minor":
+                    deckTypeData = CardUrls.TAROTMINOR;
+                    break;
+                case "D20":
+                    deckTypeData = CardUrls.DICECARDS;
+                    break;
+            }
+
+            const deckData = await DECKEDMAIN.PopulateDefaultDeck(BACKIMAGE, deckTypeData, png ? CardUrls.GETPNGURL : CardUrls.GETWEBPURL);
+            const items = DECKEDMAIN.CreateDeck(BACKIMAGE, deckData);
+
+            OBR.scene.items.addItems(items);
+        };
+
+        // const makeThing = document.getElementById('makecard') as HTMLButtonElement;
+        // makeThing.onclick = async (e) =>
+        // {
+        //     e.preventDefault();
+
+        //     const item = DECKEDMAIN.CreateCard(
+        //         CardUrls.CLUBS_10,
+        //         CardUrls.BACK_CLOUDS,
+        //         "clubs_10",
+        //         true,
+        //         Utilities.GetGUID()
+        //     )
+
+        //     OBR.scene.items.addItems([item]);
+        // };
     }
 
     public async InitializeDecked(): Promise<void>
@@ -124,18 +261,21 @@ class Decked
 
     public CreateDeck(back: string, deckData: DeckData, position?: Vector2): Item[]
     {
+        const size = deckData.Cards[0].BackSize;
+        const scale = Utilities.calculateScale(size.x, size.y);
         const backCardUrl = deckData.Cards[0].BackUrl;
         const extension = Utilities.GetImageExtension(backCardUrl);
 
         const item = buildImage(
             {
-                height: CardUrls.HEIGHT,
-                width: CardUrls.WIDTH,
+                height: size.y,
+                width: size.x,
                 url: back,
                 mime: `image/${extension}`,
             },
             { dpi: 150, offset: { x: 0, y: 0 } })
             .metadata({ [`${Constants.EXTENSIONID}/deck_data`]: deckData })
+            .scale(scale)
             .name("Deck")
             .plainText(deckData.Cards.length.toString())
             .layer("PROP")
@@ -183,28 +323,22 @@ class Decked
         return [item, lines];
     }
 
-    public CreateCard(front: string, back: string, value: string, faceUp: boolean, deckId: string): Image
+    public CreateCardFromData(cardData: CardData): Image
     {
-        const extension = Utilities.GetImageExtension(faceUp ? front : back);
-
-        const cardData: CardData =
-        {
-            BackUrl: back,
-            FrontUrl: front,
-            FaceUp: faceUp,
-            Value: value,
-            DeckId: deckId
-        }
+        const scale = cardData.FaceUp ? Utilities.calculateScale(cardData.FrontSize.x, cardData.FrontSize.y)
+            : Utilities.calculateScale(cardData.BackSize.x, cardData.BackSize.y);
+        const extension = Utilities.GetImageExtension(cardData.FaceUp ? cardData.FrontUrl : cardData.BackUrl);
 
         const item = buildImage(
             {
-                height: CardUrls.HEIGHT,
-                width: CardUrls.WIDTH,
-                url: faceUp ? front : back,
+                height: cardData.FaceUp ? cardData.FrontSize.y : cardData.BackSize.y,
+                width: cardData.FaceUp ? cardData.FrontSize.x : cardData.BackSize.x,
+                url: cardData.FaceUp ? cardData.FrontUrl : cardData.BackUrl,
                 mime: `image/${extension}`,
             },
             { dpi: 150, offset: { x: 0, y: 0 } })
             .metadata({ [`${Constants.EXTENSIONID}/card_data`]: cardData })
+            .scale(scale)
             .name("Card")
             .layer("PROP")
             .build();
@@ -212,17 +346,27 @@ class Decked
         return item;
     }
 
-    public PopulateDeck(back: string, deckArray: string[], retrieveFunction: ProcessCardUrl): DeckData
+    public async PopulateCard()
+    {
+
+    }
+
+    public async PopulateDefaultDeck(back: string, deckArray: string[], retrieveFunction: ProcessCardUrl): Promise<DeckData>
     {
         const cardData: CardData[] = [];
         const deckId = Utilities.GetGUID();
 
         for (const card of deckArray)
         {
+            // We already know the default size for the front types
+            const backSize = await Utilities.getImageDimensions(back);
+
             const newCard: CardData =
             {
                 BackUrl: back,
+                BackSize: backSize,
                 FrontUrl: retrieveFunction(card),
+                FrontSize: { x: 234, y: 333 },
                 DeckId: deckId,
                 FaceUp: false,
                 Value: card
