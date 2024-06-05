@@ -143,6 +143,8 @@ select {
     border-radius: 6px;
     border: 1px solid var(--OBR-font);
     margin-top: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 .scrollable-table table {
@@ -152,7 +154,7 @@ select {
 
 .scrollable-table th,
 .scrollable-table td {
-    padding: 4px;
+    padding-left: 4px !important;
 }
 
 #deckDatabaseTable th,
@@ -201,6 +203,14 @@ select {
     padding: 6px;
     width: 100%;
     margin-top: 6px;
+}
+
+.create-buttons:disabled,
+.confirm-button:disabled
+{
+    color: grey !important;
+    border-color: grey !important;
+    cursor: not-allowed;
 }
 
 .custom-confirm-button {

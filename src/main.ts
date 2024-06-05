@@ -46,8 +46,8 @@ class Decked
     customBackLoaded = true;
     customFrontLoaded = true;
 
-    defaultHeight = 406;
-    customHeight = 524;
+    defaultHeight = 408;
+    customHeight = 526;
 
     // Standard Card Controls
     defaultDeckBacks = document.getElementById('defaultBacks') as HTMLSelectElement;
@@ -256,6 +256,13 @@ class Decked
                 return;
             }
 
+            if (this.createDeckButton.disabled === true)
+            {
+                return;
+            }
+            this.createDeckButton.disabled = true;
+            this.createDeckButton.innerText = "Working...";
+
             const BACKIMAGE = this.backPreview.src;
             const DECKTYPE = this.defaultDeckTypes.value;
             let deckTypeData: string[];
@@ -279,9 +286,12 @@ class Decked
             }
 
             const deckData = await DECKEDMAIN.PopulateDefaultDeck(BACKIMAGE, deckTypeData, png ? CardUrls.GETPNGURL : CardUrls.GETWEBPURL);
-            const items = DECKEDMAIN.CreateDeck(deckData);
+            const screenPosition = await DECKEDMAIN.GetScreenCenter();
+            const items = DECKEDMAIN.CreateDeck(deckData, screenPosition);
 
             await OBR.scene.items.addItems(items);
+            this.createDeckButton.disabled = false;
+            this.createDeckButton.innerText = "Create Deck";
         };
     }
 
@@ -477,19 +487,30 @@ class Decked
                 await OBR.notification.show("For a single card, use the 'Create' Button next to the card name.", "DEFAULT");
                 return;
             }
+
+            if (this.createCustomDeck.disabled === true)
+            {
+                return;
+            }
+            this.createCustomDeck.disabled = true;
+            this.createCustomDeck.innerText = "Working...";
+
             const customDeckData: DeckData =
             {
                 Id: this.customLoadedDeckId,
                 Cards: this.customLoadedDeck
             };
-            const newCustomDeck = this.CreateDeck(customDeckData);
+
+            const screenPosition = await this.GetScreenCenter();
+            const newCustomDeck = this.CreateDeck(customDeckData, screenPosition);
             await OBR.scene.items.addItems(newCustomDeck);
+            this.createCustomDeck.disabled = false;
+            this.createCustomDeck.innerText = "Create";
         };
         let clearDeckConfirmed = false;
         this.clearCustomDeck.onclick = async (e) =>
         {
             e.preventDefault();
-
             if (this.customLoadedDeck.length === 0)
             {
                 await OBR.notification.show("There are no cards to clear.", "ERROR");
@@ -526,6 +547,7 @@ class Decked
         fileButton.title = "Choose a file to import"
         fileButton.className = "tinyType";
         fileButton.hidden = true;
+        fileButton.accept = ".txt";
         fileButton.onchange = async function ()
         {
             if (fileButton.files && fileButton.files.length > 0)
@@ -690,6 +712,18 @@ class Decked
 
     }
 
+    private async GetScreenCenter(): Promise<Vector2>
+    {
+        const width = await OBR.viewport.getWidth();
+        const height = await OBR.viewport.getHeight();
+        const center = await OBR.viewport.inverseTransformPoint({
+            x: width / 2,
+            y: height / 2,
+        });
+
+        return { x: center.x - (CardUrls.WIDTH / 2), y: center.y - (CardUrls.HEIGHT / 2) };
+    }
+
     private AppendCardToDatabaseTable(cardId: string, customCardName: string)
     {
         const row = document.createElement('tr');
@@ -716,7 +750,11 @@ class Decked
                 return;
             }
 
+            const screenPosition = await DECKEDMAIN.GetScreenCenter();
             const item = DECKEDMAIN.CreateCardFromData(clickedCard);
+            item.position.x = screenPosition.x;
+            item.position.y = screenPosition.y;
+
             await OBR.scene.items.addItems([item]);
         };
         button1Cell.appendChild(createButton);
@@ -738,6 +776,7 @@ class Decked
 
         this.deckDatabaseTable.appendChild(row);
     }
+
     private GetCardOptionFromList(cardlist: string[], selectElement: HTMLSelectElement, webp: boolean): void
     {
         for (const cardName of cardlist)

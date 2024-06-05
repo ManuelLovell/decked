@@ -8,6 +8,11 @@ const footer = document.querySelector<HTMLElement>('#bs-whatsnew-notes')!;
 
 whatsnew.innerHTML = `
   <div id="newsContainer">
+    <h1>Decked! 6/5</h1>
+    </br>
+    </br> Updated the Create to always drop the deck in the middle of your screen.
+    </br> Added some guards to the Create buttons to disables themselves on deck Creation. If you're using lots of outside images, the parsing/measuring can take a bit to load it all.
+    </br>
     <h1>Decked! 5/29</h1>
     Another one.
     </br>
