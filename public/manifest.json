@@ -1,7 +1,7 @@
 {
     "name": "Decked!",
     "description": "Cards",
-    "version": "0.01",
+    "version": "1.00",
     "author": "Battle-System",
     "icon": "/logo.png",
     "manifest_version": 1,
@@ -9,7 +9,7 @@
         "title": "Decked!",
         "icon": "/icon.svg",
         "popover": "/",
-        "height": 400,
+        "height": 406,
         "width": 420
     }
 }

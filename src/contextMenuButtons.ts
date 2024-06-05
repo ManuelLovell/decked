@@ -71,7 +71,7 @@ export async function SetupContextMenuButtons()
                     const basePosition = { x: deckItem.position.x + 300, y: deckItem.position.y };
 
                     const deckData: DeckData = { Cards: secondHalf, Id: secondHalf[0].DeckId };
-                    const newDeck = DECKEDMAIN.CreateDeck(secondHalf[deckData.Cards.length - 1].BackUrl, deckData, basePosition);
+                    const newDeck = DECKEDMAIN.CreateDeck(deckData, basePosition);
 
                     OBR.scene.items.addItems(newDeck);
                 }
@@ -130,10 +130,18 @@ export async function SetupContextMenuButtons()
                 for (let item of items)
                 {
                     const cdata = item.metadata[`${Constants.EXTENSIONID}/card_data`] as CardData;
+
                     const extension = Utilities.GetImageExtension(cdata.FaceUp === true ? cdata.BackUrl : cdata.FrontUrl);
+                    const scale = cdata.FaceUp === true ? Utilities.calculateScale(cdata.BackSize.x, cdata.BackSize.y)
+                        : Utilities.calculateScale(cdata.FrontSize.x, cdata.FrontSize.y);
+
                     item.image.url = cdata.FaceUp === true ? cdata.BackUrl : cdata.FrontUrl;
                     item.image.mime = `image/${extension}`;
-                    cdata.FaceUp = cdata.FaceUp === true ? false : true;
+                    item.image.width = cdata.FaceUp === true? cdata.BackSize.x : cdata.FrontSize.x;
+                    item.image.height = cdata.FaceUp === true? cdata.BackSize.y : cdata.FrontSize.y;
+                    item.scale = scale;
+
+                    cdata.FaceUp = cdata.FaceUp === true ? false : true; // Done last so the updates are on the right side
                     item.metadata[`${Constants.EXTENSIONID}/card_data`] = cdata;
                 }
             });
@@ -168,7 +176,7 @@ export async function SetupContextMenuButtons()
             }
 
             const deckData: DeckData = { Cards: cardData, Id: cardData[0].DeckId };
-            const newDeck = DECKEDMAIN.CreateDeck(cardData[deckData.Cards.length - 1].BackUrl, deckData, basePosition);
+            const newDeck = DECKEDMAIN.CreateDeck(deckData, basePosition);
 
             OBR.scene.items.addItems(newDeck);
             OBR.scene.items.deleteItems(context.items.map(x => x.id));

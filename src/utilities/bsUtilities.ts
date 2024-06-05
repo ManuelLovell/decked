@@ -70,7 +70,7 @@ export function GetWhatsNewButton()
     {
         await OBR.modal.open({
             id: Constants.EXTENSIONWHATSNEW,
-            url: `/submenu/whatsnew.html?subscriber=${BSCACHE.USER_REGISTERED}`,
+            url: `/src/whatsnew/whatsnew.html?subscriber=${BSCACHE.USER_REGISTERED}`,
             height: 500,
             width: 350,
         });

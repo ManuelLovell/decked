@@ -121,6 +121,63 @@ select {
     height: 86%;
 }
 
+#deckDatabaseTable {
+    width: 100%;
+    border-radius: 6px;
+}
+
+.table-rule {
+    border-bottom: 1px solid grey;
+    margin-left: 80px;
+    margin-right: 50px;
+    margin-bottom: 1px;
+}
+
+.scrollable-table {
+    height: 150px;
+    max-height: 150px;
+    overflow-y: auto;
+    display: block;
+    scrollbar-color: var(--OBR-Purple-Select) var(--OBR-font);
+    scrollbar-width: thin;
+    border-radius: 6px;
+    border: 1px solid var(--OBR-font);
+    margin-top: 2px;
+}
+
+.scrollable-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.scrollable-table th,
+.scrollable-table td {
+    padding: 4px;
+}
+
+#deckDatabaseTable th,
+#deckDatabaseTable td
+{
+    padding: 0;
+}
+#customCardThumbnails {
+    justify-content: space-evenly;
+}
+
+#customCardThumbnails img {
+    width: 58.5px;
+    height: 83.25px;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    margin: 6px;
+    margin-left: 10px;
+}
+
+#customCreateButtons {
+    padding-top: 4px;
+}
+
+#customCreateButtons,
 #cardThumbnails {
     display: flex;
     justify-content: space-evenly;
@@ -143,6 +200,29 @@ select {
     color: var(--OBR-font);
     padding: 6px;
     width: 100%;
+    margin-top: 6px;
+}
+
+.custom-confirm-button {
+    font-weight: bold;
+    cursor: pointer;
+    background-color: var(--OBR-dark-blue-transparent);
+    border-radius: 6px;
+    border: 1px solid var(--OBR-font);
+    color: var(--OBR-font);
+    padding: 6px;
+    width: 100%;
+}
+
+.add-to-deck-button {
+    font-weight: bold;
+    cursor: pointer;
+    background-color: var(--OBR-dark-blue-transparent);
+    border-radius: 6px;
+    border: 1px solid var(--OBR-font);
+    color: var(--OBR-font);
+    width: 100%;
+    padding: 4px;
 }
 
 .view-button {
@@ -168,6 +248,7 @@ select {
     margin-right: 6px;
 }
 
+.create-buttons,
 .ok-button {
     font-weight: bold;
     cursor: pointer;
@@ -181,6 +262,15 @@ select {
 }
 
 .selected {
+    background-color: var(--OBR-Purple-Select-transparent);
+}
+
+select option {
+    background-color: var(--OBR-dark-blue-transparent) !important;
+}
+
+select:hover,
+button:hover {
     background-color: var(--OBR-Purple-Select-transparent);
 }
 

@@ -37,33 +37,99 @@ OBR.onReady(async () =>
 
 class Decked
 {
+    customLoadedDeck: CardData[];
+    customLoadedDeckId: string;
+
     backLoaded = true;
     frontLoaded = true;
 
+    customBackLoaded = true;
+    customFrontLoaded = true;
+
+    defaultHeight = 406;
+    customHeight = 524;
+
+    // Standard Card Controls
     defaultDeckBacks = document.getElementById('defaultBacks') as HTMLSelectElement;
     defaultDeckTypes = document.getElementById('defaultDecks') as HTMLSelectElement;
-
     defaultDeckCreation = document.getElementById('defaultDeckCreation') as HTMLDivElement;
     defaultPanel = document.getElementById('defaultPanel') as HTMLDivElement;
     customDeckCreation = document.getElementById('customDeckCreation') as HTMLDivElement;
     customPanel = document.getElementById('customPanel') as HTMLDivElement;
-
     frontPreview = document.getElementById('frontPreview') as HTMLImageElement;
     backPreview = document.getElementById('backPreview') as HTMLImageElement;
-
     selectTokenButton = document.getElementById('selectTokenButton') as HTMLButtonElement;
-
     useUrlInput = document.getElementById('useUrlInput') as HTMLInputElement;
     useUrlOKButton = document.getElementById('useUrlOKButton') as HTMLButtonElement;
-
     createDeckButton = document.getElementById('createDeckButton') as HTMLButtonElement;
+
+    // Custom Card Controls
+    customFrontPreview = document.getElementById('customFrontPreview') as HTMLImageElement;
+    customBackPreview = document.getElementById('customBackPreview') as HTMLImageElement;
+
+    customDefaultBacks = document.getElementById('customDefaultBacks') as HTMLSelectElement;
+    customSelectTokenButtonBack = document.getElementById('customSelectTokenButtonBack') as HTMLButtonElement;
+    customUseUrlInputBack = document.getElementById('customUseUrlInputBack') as HTMLInputElement;
+    customUseUrlOKButtonBack = document.getElementById('customUseUrlOKButtonBack') as HTMLButtonElement;
+    addToDeckButton = document.getElementById('addToDeckButton') as HTMLButtonElement;
+
+    customDefaultFronts = document.getElementById('customDefaultFronts') as HTMLSelectElement;
+    customSelectTokenButtonFront = document.getElementById('customSelectTokenButtonFront') as HTMLButtonElement;
+    customUseUrlInputFront = document.getElementById('customUseUrlInputFront') as HTMLInputElement;
+    customUseUrlOKButtonFront = document.getElementById('customUseUrlOKButtonFront') as HTMLButtonElement;
+    customCardValueButton = document.getElementById('customCardValueButton') as HTMLInputElement;
+
+    // Deck Management Controls
+    deckDatabaseTable = document.getElementById('deckDatabaseTable') as HTMLTableElement;
+    createCustomDeck = document.getElementById('createCustomDeck') as HTMLButtonElement;
+    clearCustomDeck = document.getElementById('clearCustomDeck') as HTMLButtonElement;
+    importCustomDeck = document.getElementById('importCustomDeck') as HTMLButtonElement;
+    exportCustomDeck = document.getElementById('exportCustomDeck') as HTMLButtonElement;
 
     constructor()
     {
-
+        this.customLoadedDeck = [];
+        this.customLoadedDeckId = Utilities.GetGUID();
     }
 
-    public async Testing()
+    public SetupWhatsNew()
+    {
+        const whatsNewContainer = document.getElementById("whatsNewContainer")!;
+        whatsNewContainer.appendChild(Utilities.GetWhatsNewButton());
+    }
+    public SetupTabControls()
+    {
+        // Setup Tab Controls
+        this.defaultDeckCreation.onclick = async (e) =>
+        {
+            e.preventDefault();
+            if (!this.defaultDeckCreation.classList.contains("selected"))
+            {
+                await OBR.action.setHeight(this.defaultHeight);
+            }
+            this.defaultPanel.style.display = "block";
+            this.defaultDeckCreation.classList.add("selected");
+
+            this.customPanel.style.display = "none";
+            this.customDeckCreation.classList.remove("selected");
+        };
+
+        this.customDeckCreation.onclick = async (e) =>
+        {
+            e.preventDefault();
+            if (!this.customDeckCreation.classList.contains("selected"))
+            {
+                await OBR.action.setHeight(this.customHeight);
+            }
+            this.defaultPanel.style.display = "none";
+            this.defaultDeckCreation.classList.remove("selected");
+
+            this.customPanel.style.display = "block";
+            this.customDeckCreation.classList.add("selected");
+        };
+    }
+
+    public SetupStandardDeckControls()
     {
         // Setup Image Fail Checks
         this.frontPreview.onload = () => 
@@ -134,27 +200,6 @@ class Decked
             }
         };
 
-        // Setup Tab Controls
-        this.defaultDeckCreation.onclick = (e) =>
-        {
-            e.preventDefault();
-            this.defaultPanel.style.display = "block";
-            this.defaultDeckCreation.classList.add("selected");
-
-            this.customPanel.style.display = "none";
-            this.customDeckCreation.classList.remove("selected");
-        };
-
-        this.customDeckCreation.onclick = (e) =>
-        {
-            e.preventDefault();
-            this.defaultPanel.style.display = "none";
-            this.defaultDeckCreation.classList.remove("selected");
-
-            this.customPanel.style.display = "block";
-            this.customDeckCreation.classList.add("selected");
-        };
-
         // Setup Token Select
         this.selectTokenButton.onclick = async (e) =>
         {
@@ -206,7 +251,10 @@ class Decked
             e.preventDefault();
 
             if (!this.frontLoaded || !this.backLoaded)
+            {
                 await OBR.notification.show("Please use valid images before creating the deck.", "ERROR");
+                return;
+            }
 
             const BACKIMAGE = this.backPreview.src;
             const DECKTYPE = this.defaultDeckTypes.value;
@@ -231,46 +279,337 @@ class Decked
             }
 
             const deckData = await DECKEDMAIN.PopulateDefaultDeck(BACKIMAGE, deckTypeData, png ? CardUrls.GETPNGURL : CardUrls.GETWEBPURL);
-            const items = DECKEDMAIN.CreateDeck(BACKIMAGE, deckData);
+            const items = DECKEDMAIN.CreateDeck(deckData);
 
-            OBR.scene.items.addItems(items);
+            await OBR.scene.items.addItems(items);
+        };
+    }
+
+    public SetupCustomDeckControls()
+    {
+        // Setup Image Fail Checks
+        this.customFrontPreview.onload = () => 
+        {
+            if (this.customFrontPreview.src !== 'https://battle-system.com/owlbear/decked-docs/cards/error_card.webp')
+                this.customFrontLoaded = true;
+        };
+        this.customFrontPreview.onerror = () =>
+        {
+            this.customFrontLoaded = false;
+            this.customFrontPreview.src = 'https://battle-system.com/owlbear/decked-docs/cards/error_card.webp';
         };
 
-        // const makeThing = document.getElementById('makecard') as HTMLButtonElement;
-        // makeThing.onclick = async (e) =>
-        // {
-        //     e.preventDefault();
+        this.customBackPreview.onload = () => 
+        {
+            if (this.customBackPreview.src !== 'https://battle-system.com/owlbear/decked-docs/cards/error_card.webp')
+                this.customBackLoaded = true;
+        };
+        this.customBackPreview.onerror = () =>
+        {
+            this.customBackLoaded = false;
+            this.customBackPreview.src = 'https://battle-system.com/owlbear/decked-docs/cards/error_card.webp';
+        };
 
-        //     const item = DECKEDMAIN.CreateCard(
-        //         CardUrls.CLUBS_10,
-        //         CardUrls.BACK_CLOUDS,
-        //         "clubs_10",
-        //         true,
-        //         Utilities.GetGUID()
-        //     )
+        // Setup Deck Backing Select
+        // Keeping this seperate in case new options arrive for Custom
+        // Otherwise combine later to avoid two loops
+        CardUrls.DEFAULTBACKS.forEach(back =>
+        {
+            const name = back.replace(CardUrls.BASE, "").replace(/^backs_/, '').replace(/\.png$/, '');
+            const upper = name.charAt(0).toUpperCase() + name.slice(1);
+            const option = document.createElement('option');
+            option.value = back;
+            option.textContent = upper;
+            this.customDefaultBacks.appendChild(option);
+        });
+        this.customDefaultBacks.onchange = (e) =>
+        {
+            const element = e.currentTarget as HTMLSelectElement;
+            const value = element.value;
+            this.customBackPreview.src = value;
+        };
 
-        //     OBR.scene.items.addItems([item]);
-        // };
+        // Setup Default Card List
+        this.GetCardOptionFromList(CardUrls.DECK52, this.customDefaultFronts, false);
+        this.GetCardOptionFromList(CardUrls.TAROTMAJOR, this.customDefaultFronts, true);
+        this.GetCardOptionFromList(CardUrls.TAROTMINOR, this.customDefaultFronts, true);
+        this.GetCardOptionFromList(CardUrls.DICECARDS, this.customDefaultFronts, true);
+        this.customDefaultFronts.onchange = (e) =>
+        {
+            const element = e.currentTarget as HTMLSelectElement;
+            const value = element.value;
+            this.customFrontPreview.src = value;
+        };
+
+        // Setup Custom Token Select
+        this.customSelectTokenButtonBack.onclick = async (e) =>
+        {
+            e.preventDefault();
+
+            const selections = await OBR.player.getSelection();
+            if (selections === undefined || selections.length === 0) return;
+            const itemsSelected = BSCACHE.sceneItems.filter(x => selections.includes(x.id)) as Image[];
+            if (itemsSelected.length === 0) return;
+            const imagesSelected = itemsSelected.filter(x => x.image?.url !== undefined);
+            if (imagesSelected.length === 0) return;
+
+            this.customBackLoaded = false;
+
+            const selectedUrl = imagesSelected[0].image.url;
+            this.customBackPreview.src = selectedUrl;
+        };
+        this.customSelectTokenButtonFront.onclick = async (e) =>
+        {
+            e.preventDefault();
+
+            const selections = await OBR.player.getSelection();
+            if (selections === undefined || selections.length === 0) return;
+            const itemsSelected = BSCACHE.sceneItems.filter(x => selections.includes(x.id)) as Image[];
+            if (itemsSelected.length === 0) return;
+            const imagesSelected = itemsSelected.filter(x => x.image?.url !== undefined);
+            if (imagesSelected.length === 0) return;
+
+            this.customFrontLoaded = false;
+
+            const selectedUrl = imagesSelected[0].image.url;
+            this.customFrontPreview.src = selectedUrl;
+        };
+
+        // Setup URL Select
+        this.customUseUrlOKButtonBack.onclick = async (e) =>
+        {
+            e.preventDefault();
+            const enteredText = this.customUseUrlInputBack.value;
+            if (!enteredText) return;
+            const imageExtensions = /\.(jpg|jpeg|png|gif|webp|webm|mp4)$/i;
+
+            try
+            {
+                var parsedUrl = new URL(enteredText);
+                if ((parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:")
+                    && imageExtensions.test(parsedUrl.pathname))
+                {
+                    this.customBackLoaded = false;
+                    this.customBackPreview.src = parsedUrl.toString();
+                }
+                else
+                {
+                    await OBR.notification.show("Invalid image URL.", "ERROR");
+                }
+            } catch (_)
+            {
+                await OBR.notification.show("Invalid image URL.", "ERROR");
+            }
+        };
+        this.customUseUrlOKButtonFront.onclick = async (e) =>
+        {
+            e.preventDefault();
+            const enteredText = this.customUseUrlInputFront.value;
+            if (!enteredText) return;
+            const imageExtensions = /\.(jpg|jpeg|png|gif|webp|webm|mp4)$/i;
+
+            try
+            {
+                var parsedUrl = new URL(enteredText);
+                if ((parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:")
+                    && imageExtensions.test(parsedUrl.pathname))
+                {
+                    this.customFrontLoaded = false;
+                    this.customFrontPreview.src = parsedUrl.toString();
+                }
+                else
+                {
+                    await OBR.notification.show("Invalid image URL.", "ERROR");
+                }
+            } catch (_)
+            {
+                await OBR.notification.show("Invalid image URL.", "ERROR");
+            }
+        };
+
+        // Add Card to Deck Databse
+        this.addToDeckButton.onclick = async (e) =>
+        {
+            e.preventDefault();
+
+            if (!this.customFrontLoaded || !this.customBackLoaded)
+            {
+                await OBR.notification.show("Please use valid images before adding to the deck.", "ERROR");
+                return;
+            }
+
+            const frontCustomImage = this.customFrontPreview.src;
+            const frontCustomDimensions = { x: this.customFrontPreview.naturalWidth, y: this.customFrontPreview.naturalHeight };
+            const backCustomImage = this.customBackPreview.src;
+            const backCustomDimensions = { x: this.customBackPreview.naturalWidth, y: this.customBackPreview.naturalHeight };
+            let customCardName = this.customCardValueButton.value;
+            if (customCardName === undefined || customCardName === null || customCardName.trim() === "") customCardName = "Unknown Name";
+            const cardId = Utilities.GetGUID();
+            const newCustomCard: CardData =
+            {
+                FrontUrl: frontCustomImage,
+                FrontSize: frontCustomDimensions,
+                BackUrl: backCustomImage,
+                BackSize: backCustomDimensions,
+                Value: customCardName,
+                FaceUp: false,
+                DeckId: this.customLoadedDeckId,
+                CardId: cardId
+            };
+            this.customLoadedDeck.push(newCustomCard);
+
+            // Create table element
+            this.AppendCardToDatabaseTable(cardId, customCardName);
+        }
+
+        // Custom Deck Configuration Controls
+        this.createCustomDeck.onclick = async (e) =>
+        {
+            e.preventDefault();
+
+            if (this.customLoadedDeck.length === 0)
+            {
+                await OBR.notification.show("Cannot create an empty deck.", "ERROR");
+                return;
+            }
+            else if (this.customLoadedDeck.length === 1)
+            {
+                await OBR.notification.show("For a single card, use the 'Create' Button next to the card name.", "DEFAULT");
+                return;
+            }
+            const customDeckData: DeckData =
+            {
+                Id: this.customLoadedDeckId,
+                Cards: this.customLoadedDeck
+            };
+            const newCustomDeck = this.CreateDeck(customDeckData);
+            await OBR.scene.items.addItems(newCustomDeck);
+        };
+        let clearDeckConfirmed = false;
+        this.clearCustomDeck.onclick = async (e) =>
+        {
+            e.preventDefault();
+
+            if (this.customLoadedDeck.length === 0)
+            {
+                await OBR.notification.show("There are no cards to clear.", "ERROR");
+                return;
+            }
+
+            if (clearDeckConfirmed)
+            {
+                this.deckDatabaseTable.innerHTML = "";
+                this.customLoadedDeck = [];
+                this.customLoadedDeckId = Utilities.GetGUID();
+                this.clearCustomDeck.style.backgroundColor = 'rgba(30, 34, 49, 0.5)';
+                this.clearCustomDeck.innerText = 'Clear';
+                clearDeckConfirmed = false;
+            }
+            else
+            {
+                clearDeckConfirmed = true;
+                this.clearCustomDeck.style.backgroundColor = 'darkred';
+                this.clearCustomDeck.innerText = 'You Sure?';
+                setTimeout(() =>
+                {
+                    clearDeckConfirmed = false;
+                    this.clearCustomDeck.style.backgroundColor = 'rgba(30, 34, 49, 0.5)';
+                    this.clearCustomDeck.innerText = 'Clear';
+                }, 3000);
+            }
+        };
+
+        // Need a file holder button
+        const fileButton = document.createElement('input');
+        fileButton.type = "file";
+        fileButton.id = "fileButton";
+        fileButton.title = "Choose a file to import"
+        fileButton.className = "tinyType";
+        fileButton.hidden = true;
+        fileButton.onchange = async function ()
+        {
+            if (fileButton.files && fileButton.files.length > 0)
+            {
+                let file = fileButton.files[0];
+                let reader = new FileReader();
+
+                reader.readAsText(file);
+
+                reader.onload = async function ()
+                {
+                    try
+                    {
+                        const saveData: DeckData = JSON.parse(reader.result as string);
+                        DECKEDMAIN.customLoadedDeckId = saveData.Id;
+                        DECKEDMAIN.customLoadedDeck = saveData.Cards;
+                        for (const card of DECKEDMAIN.customLoadedDeck)
+                        {
+                            DECKEDMAIN.AppendCardToDatabaseTable(card.CardId, card.Value);
+                        }
+                        OBR.notification.show("Import Complete!", "SUCCESS");
+                    }
+                    catch (error) 
+                    {
+                        OBR.notification.show(`The import failed - ${error}`, "ERROR");
+                    }
+                };
+
+                reader.onerror = function ()
+                {
+                    console.log(reader.error);
+                };
+            }
+        }
+        this.importCustomDeck.onclick = async (e) =>
+        {
+            e.preventDefault();
+            fileButton!.click();
+
+        };
+        this.exportCustomDeck.onclick = async (e) =>
+        {
+            e.preventDefault();
+            const exportDeckData: DeckData =
+            {
+                Id: this.customLoadedDeckId,
+                Cards: this.customLoadedDeck
+            };
+            var a = document.createElement("a");
+            var file = new Blob([JSON.stringify(exportDeckData)], { type: "text/plain" });
+            a.href = URL.createObjectURL(file);
+            a.download = `DeckedExport-${Date.now()}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+    }
+
+    public async Testing()
+    {
     }
 
     public async InitializeDecked(): Promise<void>
     {
         await SetupContextMenuButtons();
         this.Testing();
+        this.SetupWhatsNew();
+        this.SetupTabControls();
+        this.SetupStandardDeckControls();
+        this.SetupCustomDeckControls();
     }
 
-    public CreateDeck(back: string, deckData: DeckData, position?: Vector2): Item[]
+    public CreateDeck(deckData: DeckData, position?: Vector2): Item[]
     {
         const size = deckData.Cards[0].BackSize;
         const scale = Utilities.calculateScale(size.x, size.y);
-        const backCardUrl = deckData.Cards[0].BackUrl;
+        const backCardUrl = deckData.Cards[deckData.Cards.length - 1].BackUrl;
         const extension = Utilities.GetImageExtension(backCardUrl);
 
         const item = buildImage(
             {
                 height: size.y,
                 width: size.x,
-                url: back,
+                url: backCardUrl,
                 mime: `image/${extension}`,
             },
             { dpi: 150, offset: { x: 0, y: 0 } })
@@ -349,6 +688,73 @@ class Decked
     public async PopulateCard()
     {
 
+    }
+
+    private AppendCardToDatabaseTable(cardId: string, customCardName: string)
+    {
+        const row = document.createElement('tr');
+        row.id = cardId;
+
+        const nameCell = document.createElement('td');
+        nameCell.textContent = customCardName;
+        row.appendChild(nameCell);
+
+        const button1Cell = document.createElement('td');
+        const createButton = document.createElement('button');
+        createButton.textContent = 'Create';
+        createButton.classList.add('confirm-button');
+        createButton.onclick = async (e) =>
+        {
+            e.preventDefault();
+            const clickedRow = (e.target as HTMLElement).closest('tr');
+            const clickedCard = this.customLoadedDeck.find(x => x.CardId === clickedRow.id);
+
+            if (!clickedCard)
+            {
+                await OBR.notification.show("Unable to find card data.", "ERROR");
+                clickedRow.remove();
+                return;
+            }
+
+            const item = DECKEDMAIN.CreateCardFromData(clickedCard);
+            await OBR.scene.items.addItems([item]);
+        };
+        button1Cell.appendChild(createButton);
+        row.appendChild(button1Cell);
+
+        const button2Cell = document.createElement('td');
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.classList.add('confirm-button');
+        removeButton.onclick = async (e) =>
+        {
+            e.preventDefault();
+            const clickedRow = (e.target as HTMLElement).closest('tr');
+            this.customLoadedDeck = this.customLoadedDeck.filter(x => x.CardId !== clickedRow.id);
+            clickedRow.remove();
+        };
+        button2Cell.appendChild(removeButton);
+        row.appendChild(button2Cell);
+
+        this.deckDatabaseTable.appendChild(row);
+    }
+    private GetCardOptionFromList(cardlist: string[], selectElement: HTMLSelectElement, webp: boolean): void
+    {
+        for (const cardName of cardlist)
+        {
+            const words = cardName.split('_');
+
+            const capitalizedWords = words.map(word =>
+                word.charAt(0).toUpperCase() + word.slice(1)
+            );
+
+            const titleCasedName = capitalizedWords.join(' ');
+
+            const option = document.createElement('option');
+            option.value = `${CardUrls.BASE}${cardName}${webp ? '.webp' : '.png'}`;
+            option.textContent = titleCasedName;
+            selectElement.appendChild(option);
+        }
     }
 
     public async PopulateDefaultDeck(back: string, deckArray: string[], retrieveFunction: ProcessCardUrl): Promise<DeckData>

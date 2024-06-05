@@ -11,6 +11,7 @@ export class Constants
 
     static BROADCASTCHANNEL = "com.battle-system.decked-broadcast";
 
+    static CHECKREGISTRATION = 'https://vrwtdtmnbyhaehtitrlb.supabase.co/functions/v1/patreon-check';
     static ANONAUTH = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0';
 }
 
@@ -25,9 +26,9 @@ export class CardUrls
     static BACK_ABSTRACT = CardUrls.BASE + "backs_abstract.png";
     static BACK_ASTRONAUT = CardUrls.BASE + "backs_astronaut.png";
     static BACK_BLUE = CardUrls.BASE + "backs_blue.png";
-    static BACK_BLUETWO = CardUrls.BASE + "backs_blue2.png";
+    static BACK_BLUETWO = CardUrls.BASE + "backs_blueToo.png";
     static BACK_RED = CardUrls.BASE + "backs_red.png";
-    static BACK_REDTWO = CardUrls.BASE + "backs_red2.png";
+    static BACK_REDTWO = CardUrls.BASE + "backs_redToo.png";
     static BACK_CASTLE = CardUrls.BASE + "backs_castle.png";
     static BACK_CLOUDS = CardUrls.BASE + "backs_clouds.png";
     static BACK_SCENE = CardUrls.BASE + "backs_scene.png";

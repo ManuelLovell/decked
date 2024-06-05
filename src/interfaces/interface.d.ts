@@ -7,6 +7,7 @@ interface CardData
     Value: string;
     FaceUp: boolean;
     DeckId: string;
+    CardId?: string;
 }
 
 interface DeckData

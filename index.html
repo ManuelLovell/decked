@@ -14,6 +14,7 @@
                 <div class="controlContainer">
                     <button class="view-button selected" id="defaultDeckCreation">Standard</button>
                     <button class="view-button" id="customDeckCreation">Custom</button>
+                    <div id="whatsNewContainer"></div>
                 </div>
             </div>
             <div id="defaultPanel" class="panel">
@@ -31,7 +32,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <div>Deck Backing:</div>
+                                <div>Default Backings:</div>
                             </td>
                             <td>
                                 <div><select id="defaultBacks" name="defaultBacks"></div>
@@ -39,7 +40,7 @@
                         </tr>
                         <tr id="standardUseTokenRow">
                             <td>
-                                <div id="selectedToken"> • Token Name/Url</div>
+                                <div id="selectedToken"> or Use Token Image</div>
                             </td>
                             <td>
                                 <button class="confirm-button" id="selectTokenButton">Confirm Selected Token</button>
@@ -47,18 +48,18 @@
                         </tr>
                         <tr id="standardUseUrlRow">
                             <td>
-                                <div id="selectedUrl"> • Url Name/Url</div>
+                                <div id="selectedUrl"> or Use External URL</div>
                             </td>
                             <td>
                                 <div style="display: flex;">
-                                    <input class="text-input" id="useUrlInput" />
+                                    <input class="text-input" id="useUrlInput" placeholder="Enter URL.." />
                                     <button class="ok-button" id="useUrlOKButton">OK</button>
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <div>Deck Type:</div>
+                                <div>Default Deck Type:</div>
                             </td>
                             <td>
                                 <div><select id="defaultDecks" name="defaultDecks"></div>
@@ -73,8 +74,127 @@
                 </table>
             </div>
             <div id="customPanel" class="panel" style="display: none;">
-                <div id="textareaPrivateNotes">
-                </div>
+                <table style="width: 100%;">
+                    <colgroup>
+                        <col style="width: 30%;">
+                        <col style="width: 50%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div>Default Backs: </div>
+                            </td>
+                            <td>
+                                <div><select id="customDefaultBacks" name="customDefaultBacks"></div>
+                            </td>
+                            <td rowspan="3">
+                                <div id="customCardThumbnails">
+                                    <img class="card-preview" id="customBackPreview"
+                                        src="https://battle-system.com/owlbear/decked-docs/cards/backs_abstract.png"
+                                        onerror="this.onerror=null;this.src='https://battle-system.com/owlbear/decked-docs/cards/error_card.webp';">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="customUseTokenRowBack">
+                            <td>
+                                <div id="customSelectedTokenBack">Token Back: </div>
+                            </td>
+                            <td>
+                                <button class="custom-confirm-button" id="customSelectTokenButtonBack">Confirm Selected</button>
+                            </td>
+                        </tr>
+                        <tr id="customUseUrlRowBack">
+                            <td>
+                                <div id="customSelectedUrlBack">External Back: </div>
+                            </td>
+                            <td>
+                                <div style="display: flex;">
+                                    <input class="text-input" id="customUseUrlInputBack" placeholder="Enter URL.."/>
+                                    <button class="ok-button" id="customUseUrlOKButtonBack">OK</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <div class="table-rule"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>Default Fronts: </div>
+                            </td>
+                            <td>
+                                <div><select id="customDefaultFronts" name="customDefaultFronts"></div>
+                            </td>
+                            <td rowspan="4">
+                                <div id="customCardThumbnails">
+                                    <img class="card-preview" id="customFrontPreview"
+                                        src="https://battle-system.com/owlbear/decked-docs/cards/spades_king.png"
+                                        onerror="this.onerror=null;this.src='https://battle-system.com/owlbear/decked-docs/cards/error_card.webp';">
+                                </div>
+                                <button class="add-to-deck-button" id="addToDeckButton">Add to Deck</button>
+                            </td>
+                        </tr>
+                        <tr id="customUseTokenRowFront">
+                            <td>
+                                <div id="customSelectedTokenFront">Token Front: </div>
+                            </td>
+                            <td>
+                                <button class="custom-confirm-button" id="customSelectTokenButtonFront">Confirm Selected</button>
+                            </td>
+                        </tr>
+                        <tr id="customUseUrlRowFront">
+                            <td>
+                                <div id="customSelectedUrlFront">External Front: </div>
+                            </td>
+                            <td>
+                                <div style="display: flex;">
+                                    <input class="text-input" id="customUseUrlInputFront" placeholder="Enter URL.."/>
+                                    <button class="ok-button" id="customUseUrlOKButtonFront">OK</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="customCardValue">
+                            <td>
+                                <div>Card Value: </div>
+                            </td>
+                            <td>
+                                <div><input class="text-input" id="customCardValueButton" placeholder="Enter Name/Value.."/></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <div class="table-rule"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="width: 100%;">
+                                <div class="scrollable-table">
+                                    <table id="deckDatabaseTable">
+                                        <colgroup>
+                                            <col style="width: 60%;">
+                                            <col style="width: 20%;">
+                                            <col style="width: 20%;">
+                                        </colgroup>
+                                        <tbody id="deckDatabaseTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="width: 100%;">
+                                <div id="customCreateButtons">
+                                    <button class="create-buttons" id="createCustomDeck">Create</button>
+                                    <button class="create-buttons" id="clearCustomDeck">Clear</button>
+                                    <button class="create-buttons" id="importCustomDeck">Import</button>
+                                    <button class="create-buttons" id="exportCustomDeck">Export</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
