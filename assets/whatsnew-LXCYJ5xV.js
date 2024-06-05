@@ -1,5 +1,10 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{O as o,C as i}from"./bsConstants-CGmqgvGh.js";const c=document.querySelector("#bs-whatsnew"),d=document.querySelector("#bs-whatsnew-notes");c.innerHTML=`
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{O as o,C as i}from"./bsConstants-CGmqgvGh.js";const d=document.querySelector("#bs-whatsnew"),c=document.querySelector("#bs-whatsnew-notes");d.innerHTML=`
   <div id="newsContainer">
+    <h1>Decked! 6/5</h1>
+    </br>
+    </br> Updated the Create to always drop the deck in the middle of your screen.
+    </br> Added some guards to the Create buttons to disables themselves on deck Creation. If you're using lots of outside images, the parsing/measuring can take a bit to load it all.
+    </br>
     <h1>Decked! 5/29</h1>
     Another one.
     </br>
@@ -16,7 +21,7 @@ import"./modulepreload-polyfill-B5Qt9EMX.js";import{O as o,C as i}from"./bsConst
     </br> Have fun!
     </br>
     </div>
-`;o.onReady(async()=>{const n=window.location.search,e=new URLSearchParams(n).get("subscriber")==="true";d.innerHTML=`
+`;o.onReady(async()=>{const n=window.location.search,e=new URLSearchParams(n).get("subscriber")==="true";c.innerHTML=`
     <div id="footButtonContainer">
         <button id="discordButton" type="button" title="Join the Owlbear-Rodeo Discord"><embed class="svg discord" src="/w-discord.svg" /></button>
         <button id="patreonButton" type="button" ${e?'title="Thank you for subscribing!"':'title="Check out the Battle-System Patreon"'}>
