@@ -195,7 +195,7 @@ class Decked
                     this.frontPreview.src = CardUrls.BASE + "swords_king.webp";
                     break;
                 case "D20":
-                    this.frontPreview.src = CardUrls.BASE + "dice_20.webp";
+                    this.frontPreview.src = CardUrls.BASE + "dicecard_20.webp";
                     break;
             }
         };
